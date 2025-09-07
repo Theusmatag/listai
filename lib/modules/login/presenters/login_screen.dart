@@ -26,8 +26,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xff4169E1),
       resizeToAvoidBottomInset: true,
-
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -36,7 +36,13 @@ class _LoginScreenState extends State<LoginScreen> {
               curve: Curves.ease,
               opacity: loginController.ativarAnimacao.value ? 1.0 : 0.0,
               duration: const Duration(seconds: 4),
-              child: FormLoginComponent(verSenha: loginController.verSenha),
+              child: FormLoginComponent(
+                verSenha: loginController.verSenha,
+                cadastro: loginController.cadastro,
+                entrar: () {
+                  loginController.entrar();
+                },
+              ),
             ),
           ),
         ),

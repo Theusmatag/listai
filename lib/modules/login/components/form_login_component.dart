@@ -1,10 +1,18 @@
 import 'dart:developer';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class FormLoginComponent extends StatefulWidget {
   RxBool verSenha;
-  FormLoginComponent({super.key, required this.verSenha});
+  RxBool cadastro;
+  Function()? entrar;
+  FormLoginComponent({
+    super.key,
+    required this.verSenha,
+    required this.cadastro,
+    required this.entrar,
+  });
 
   @override
   State<FormLoginComponent> createState() => _FormLoginComponentState();
@@ -40,7 +48,7 @@ class _FormLoginComponentState extends State<FormLoginComponent> {
                         ),
                         SizedBox(height: 30),
                         Text(
-                          'Login',
+                          widget.cadastro.value ? 'Cadastro' : 'Login',
                           style: TextStyle(
                             fontSize: 30,
                             fontWeight: FontWeight.bold,
@@ -48,7 +56,9 @@ class _FormLoginComponentState extends State<FormLoginComponent> {
                         ),
                         SizedBox(height: 10),
                         Text(
-                          'Entre com seu login e senha',
+                          widget.cadastro.value
+                              ? 'Crie sua conta'
+                              : 'Entre com seu e-mail e senha',
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.normal,
@@ -57,7 +67,7 @@ class _FormLoginComponentState extends State<FormLoginComponent> {
                         SizedBox(height: 30),
                         TextFormField(
                           decoration: InputDecoration(
-                            hintText: 'Login',
+                            hintText: 'E-mail',
                             hintStyle: TextStyle(color: Colors.white),
                             prefixIcon: Icon(Icons.person, color: Colors.white),
                             fillColor: Colors.white,
@@ -104,14 +114,60 @@ class _FormLoginComponentState extends State<FormLoginComponent> {
                             ),
                           ),
                         ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            child: Text(
-                              'Esqueçeu a senha?',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                        Visibility(
+                          visible: widget.cadastro.value,
+                          child: Column(
+                            children: [
+                              SizedBox(height: 20),
+                              TextFormField(
+                                obscureText: !widget.verSenha.value,
+                                decoration: InputDecoration(
+                                  hintText: 'Confirmar senha',
+                                  hintStyle: TextStyle(color: Colors.white),
+                                  prefixIcon: Icon(
+                                    Icons.lock,
+                                    color: Colors.white,
+                                  ),
+                                  fillColor: Colors.white,
+                                  disabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white),
+                                  ),
+                                  suffixIcon: IconButton(
+                                    onPressed: () {
+                                      widget.verSenha.value =
+                                          !widget.verSenha.value;
+                                      log(widget.verSenha.value.toString());
+                                    },
+                                    icon: Icon(
+                                      !widget.verSenha.value
+                                          ? Icons.remove_red_eye
+                                          : Icons.visibility_off,
+                                      color: Colors.white,
+                                      opticalSize: 10,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Visibility(
+                          visible: !widget.cadastro.value,
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              child: Text(
+                                'Esqueçeu a senha?',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              onPressed: () {},
                             ),
-                            onPressed: () {},
                           ),
                         ),
                         SizedBox(height: 30),
@@ -119,8 +175,14 @@ class _FormLoginComponentState extends State<FormLoginComponent> {
                           height: 50,
                           width: double.maxFinite,
                           child: ElevatedButton(
-                            onPressed: () {},
-                            child: Text('Login'),
+                            onPressed: !widget.cadastro.value
+                                ? () {
+                                    widget.entrar!();
+                                  }
+                                : () {},
+                            child: Text(
+                              !widget.cadastro.value ? 'Entrar' : 'Cadastrar',
+                            ),
                           ),
                         ),
                       ],
@@ -132,10 +194,21 @@ class _FormLoginComponentState extends State<FormLoginComponent> {
                       child: Text.rich(
                         TextSpan(
                           children: [
-                            TextSpan(text: 'Não tem uma conta? '),
                             TextSpan(
-                              text: 'Cadastre-se',
+                              text: !widget.cadastro.value
+                                  ? 'Não tem uma conta? '
+                                  : 'Já tem uma conta? ',
+                            ),
+                            TextSpan(
+                              text: !widget.cadastro.value
+                                  ? 'Cadastre-se'
+                                  : 'Login',
                               style: TextStyle(fontWeight: FontWeight.bold),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  widget.cadastro.value =
+                                      !widget.cadastro.value;
+                                },
                             ),
                           ],
                         ),
