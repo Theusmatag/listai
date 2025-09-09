@@ -1,17 +1,39 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class FormLoginComponent extends StatefulWidget {
-  RxBool verSenha;
-  RxBool cadastro;
-  Function()? entrar;
-  FormLoginComponent({
+  final RxBool prosseguir;
+  final RxBool verSenha;
+  final RxBool cadastro;
+  final RxString? erroEmail;
+  final RxString? erroSenha;
+  final RxString? erroConfirmarSenha;
+  final Rx<TextEditingController> emailController;
+  final Rx<TextEditingController> senhaController;
+  final Rx<TextEditingController> confirmarSenhaController;
+  final Function()? entrar;
+  final void Function(String value)? onEmailChanged;
+  final void Function(String value)? onSenhaChanged;
+  final void Function(String value)? onConfirmarSenhaChanged;
+  const FormLoginComponent({
     super.key,
     required this.verSenha,
     required this.cadastro,
+    required this.emailController,
+    required this.senhaController,
+    required this.confirmarSenhaController,
     required this.entrar,
+    this.onEmailChanged,
+    this.onSenhaChanged,
+    this.onConfirmarSenhaChanged,
+    this.erroEmail,
+    this.erroSenha,
+    this.erroConfirmarSenha,
+    required this.prosseguir,
   });
 
   @override
@@ -66,6 +88,7 @@ class _FormLoginComponentState extends State<FormLoginComponent> {
                         ),
                         SizedBox(height: 30),
                         TextFormField(
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           decoration: InputDecoration(
                             hintText: 'E-mail',
                             hintStyle: TextStyle(color: Colors.white),
@@ -80,12 +103,21 @@ class _FormLoginComponentState extends State<FormLoginComponent> {
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.white),
                             ),
+                            errorText: widget.erroEmail?.value.isEmpty == true
+                                ? null
+                                : widget.erroEmail?.value,
                           ),
+                          controller: widget.emailController.value,
+                          onChanged: widget.onEmailChanged,
                         ),
                         SizedBox(height: 20),
                         TextFormField(
+                          autovalidateMode: AutovalidateMode.disabled,
                           obscureText: !widget.verSenha.value,
                           decoration: InputDecoration(
+                            errorText: widget.erroSenha?.value.isEmpty == true
+                                ? null
+                                : widget.erroSenha?.value,
                             hintText: 'Senha',
                             hintStyle: TextStyle(color: Colors.white),
                             prefixIcon: Icon(Icons.lock, color: Colors.white),
@@ -113,6 +145,8 @@ class _FormLoginComponentState extends State<FormLoginComponent> {
                               ),
                             ),
                           ),
+                          controller: widget.senhaController.value,
+                          onChanged: widget.onSenhaChanged,
                         ),
                         Visibility(
                           visible: widget.cadastro.value,
@@ -120,8 +154,18 @@ class _FormLoginComponentState extends State<FormLoginComponent> {
                             children: [
                               SizedBox(height: 20),
                               TextFormField(
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
                                 obscureText: !widget.verSenha.value,
                                 decoration: InputDecoration(
+                                  errorText:
+                                      widget
+                                              .erroConfirmarSenha
+                                              ?.value
+                                              .isEmpty ==
+                                          true
+                                      ? null
+                                      : widget.erroConfirmarSenha?.value,
                                   hintText: 'Confirmar senha',
                                   hintStyle: TextStyle(color: Colors.white),
                                   prefixIcon: Icon(
@@ -153,6 +197,9 @@ class _FormLoginComponentState extends State<FormLoginComponent> {
                                     ),
                                   ),
                                 ),
+                                controller:
+                                    widget.confirmarSenhaController.value,
+                                onChanged: widget.onConfirmarSenhaChanged,
                               ),
                             ],
                           ),
@@ -175,11 +222,13 @@ class _FormLoginComponentState extends State<FormLoginComponent> {
                           height: 50,
                           width: double.maxFinite,
                           child: ElevatedButton(
-                            onPressed: !widget.cadastro.value
-                                ? () {
-                                    widget.entrar!();
-                                  }
-                                : () {},
+                            onPressed: widget.prosseguir.value
+                                ? !widget.cadastro.value
+                                      ? () {
+                                          widget.entrar!();
+                                        }
+                                      : () {}
+                                : null,
                             child: Text(
                               !widget.cadastro.value ? 'Entrar' : 'Cadastrar',
                             ),

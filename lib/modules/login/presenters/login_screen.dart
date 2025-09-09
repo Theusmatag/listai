@@ -32,18 +32,37 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Obx(
-            () => AnimatedOpacity(
-              curve: Curves.ease,
-              opacity: loginController.ativarAnimacao.value ? 1.0 : 0.0,
-              duration: const Duration(seconds: 4),
-              child: FormLoginComponent(
-                verSenha: loginController.verSenha,
-                cadastro: loginController.cadastro,
-                entrar: () {
-                  loginController.entrar();
-                },
-              ),
-            ),
+            () => !loginController.carregando.value
+                ? AnimatedOpacity(
+                    curve: Curves.ease,
+                    opacity: loginController.ativarAnimacao.value ? 1.0 : 0.0,
+                    duration: const Duration(seconds: 4),
+                    child: FormLoginComponent(
+                      prosseguir: loginController.prosseguir,
+                      verSenha: loginController.verSenha,
+                      cadastro: loginController.cadastro,
+                      entrar: () {
+                        loginController.login();
+                      },
+                      emailController: loginController.emailController,
+                      senhaController: loginController.senhaController,
+                      confirmarSenhaController:
+                          loginController.confirmarSenhaController,
+                      onEmailChanged: (value) {
+                        loginController.setarValorDoEmail(value);
+                      },
+                      onConfirmarSenhaChanged: (value) {
+                        loginController.setarValorDaConfirmarSenha(value);
+                      },
+                      onSenhaChanged: (value) {
+                        loginController.setarValorDaSenhaLogin(value);
+                      },
+                      erroEmail: loginController.erroEmail,
+                      erroSenha: loginController.erroSenha,
+                      erroConfirmarSenha: loginController.erroConfirmarSenha,
+                    ),
+                  )
+                : Center(child: CircularProgressIndicator(color: Colors.white)),
           ),
         ),
       ),

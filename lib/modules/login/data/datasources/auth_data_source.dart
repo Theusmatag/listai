@@ -42,7 +42,10 @@ class LoginDataSourceImpl implements LoginDataSource {
           titulo: 'Email não confirmado',
         );
       }
-      throw e.message!;
+      throw GenericException(
+        message: e.message!,
+        titulo: 'Erro ao fazer login',
+      );
     }
   }
 

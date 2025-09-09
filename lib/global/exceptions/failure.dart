@@ -24,3 +24,7 @@ class UnknownError extends Failure {
 class ServiceException extends Failure {
   ServiceException({required super.message, super.titulo});
 }
+
+class GenericException extends Failure {
+  GenericException({required super.message, super.titulo});
+}

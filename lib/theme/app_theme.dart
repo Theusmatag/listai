@@ -15,6 +15,7 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white,
           foregroundColor: Color(0xff4169E1),
+          disabledBackgroundColor: Colors.white.withOpacity(0.5),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
@@ -31,7 +32,14 @@ class AppTheme {
       textTheme: GoogleFonts.outfitTextTheme(Typography.whiteCupertino),
       scaffoldBackgroundColor: Colors.white,
       dialogTheme: DialogThemeData(
+        titleTextStyle: GoogleFonts.outfit(
+          color: Colors.black,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
+
         backgroundColor: Colors.white,
+        contentTextStyle: GoogleFonts.outfit(color: Colors.black, fontSize: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
       appBarTheme: AppBarTheme(
